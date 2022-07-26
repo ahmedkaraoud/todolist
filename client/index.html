@@ -1,0 +1,106 @@
+<html>
+    <head>
+        <title>To do List</title>
+
+        <link rel="stylesheet" href="lib/Bootstrap/bootstrap.min.css" />
+        <link rel="stylesheet" href="lib/jQuery/jquery.ui.min.css" />
+        <link rel="stylesheet" href="assets/todo.css" />
+    </head>
+
+    <body class="well">
+        <div id="container">
+
+            <div id="header"> To Do List </div>
+
+            <div class="task-list task-container" id="pending">
+                <h3>Pending</h3>
+                <!--<div class="todo-task">
+                    <div class="task-header">Sample Header</div>
+                    <div class="task-date">25/06/1992</div>
+                    <div class="task-description">Lorem Ipsum Dolor Sit Amet</div>
+                </div>-->
+            </div>
+
+            <div class="task-list task-container" id="inProgress">
+                <h3>In Progress</h3>
+            </div>
+
+            <div class="task-list task-container" id="completed">
+                <h3>Completed</h3>
+            </div>
+
+            <div class="task-list">
+                <h3>Add a task</h3>
+                <form id="todo-form">
+                    <input type="text" placeholder="Title" id="title" />
+                    <textarea placeholder="Description" id="desc"></textarea>
+                    <input type="text" id="datepicker" id="date" placeholder="Due Date (dd/mm/yyyy)" />
+                    <div class="slidecontainer">
+                        <h4>Priority level</h4>
+                        <input type="range" min="1" max="5" id="level" value="3" class="slider" id="myRange">
+                      </div>
+                    <input type="button" class="btn btn-primary" value="Add Task" onclick="todo.add();" />
+                    <script>
+                        document.addEventListener("submit", sendData);
+                        function sendData(e) {
+                          e.preventDefault();
+                          const title = document.querySelector("title").value;
+                          const description = document.querySelector("desc").value;
+                          const dateOfCompletion = document.querySelector("date").value;
+                          const prioritylevel = document.querySelector("level").value;
+                  
+                          fetch("/add", {
+                            method: "POST",
+                            headers: {
+                              Accept: "application/json",
+                              "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                              title : title,
+                              description:description,
+                              dateOfCompletion:dateOfCompletion,
+                              prioritylevel:prioritylevel,
+                              state:"pending"
+                            })
+                          })
+                            .then(res => res.json()).catch(err => console.log(err));
+                        }
+                      </script>
+                </form>
+                <div id="delete-div">
+                    Drag Here to Delete
+                    <script>
+                        document.addEventListener("submit", sendData);
+                        function sendData(e) {
+                          e.preventDefault();                  
+                          fetch("/DELETE", {
+                            method: "DELETE",
+                            headers: {
+                              Accept: "application/json",
+                              "Content-Type": "application/json"
+                            },
+                          })
+                            .then(res => res.json()).catch(err => console.log(err));
+                        }
+                      </script>
+                </div>
+            </div>
+
+            <div style="clear:both;"></div>
+	          <script type="text/javascript" src="lib/jQuery/jquery.min.js"></script>
+            <script type="text/javascript" src="lib/Bootstrap/bootstrap.min.js"></script>
+            <script type="text/javascript" src="lib/jQuery/jquery.ui.min.js"></script>
+            <script type="text/javascript" src="assets/todo.js"></script>
+
+            <script type="text/javascript">
+                $( "#datepicker" ).datepicker();
+                $( "#datepicker" ).datepicker("option", "dateFormat", "dd/mm/yy");
+
+                $(".task-container").droppable();
+                $(".todo-task").draggable({ revert: "valid", revertDuration:200 });
+                todo.init();
+            </script>
+
+        </div>
+    </body>
+</html>
